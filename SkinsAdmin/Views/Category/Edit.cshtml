@@ -1,0 +1,49 @@
+﻿@model SkinsAdmin.Models.Category
+
+@{
+    Layout = null;
+}
+
+<form asp-action="Edit" method="post" class="ajaxForm" tname="#dataTableId">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Name" asp-for="Name" class="form-control-label"></label>
+                <input asp-for="Name" class="form-control">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        @*<div class="col-md-3 text-left">
+            <div class="form-group">
+                <label for="IsShow" asp-for="IsShowAndroid" class="form-control-label"></label><br />
+                <span class="kt-switch kt-switch--outline kt-switch--icon kt-switch--info">
+                    <label>
+                        <input type="checkbox" asp-for="IsShowAndroid">
+                        <span></span>
+                    </label>
+                </span>
+                <span asp-validation-for="IsShowAndroid" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-3 text-left">
+            <div class="form-group">
+                <label for="IsShow" asp-for="IsShowIOS" class="form-control-label"></label><br />
+                <span class="kt-switch kt-switch--outline kt-switch--icon kt-switch--info">
+                    <label>
+                        <input type="checkbox" asp-for="IsShowIOS">
+                        <span></span>
+                    </label>
+                </span>
+                <span asp-validation-for="IsShowIOS" class="text-danger"></span>
+            </div>
+        </div>*@
+    </div>
+
+    <button type="button" class="rounded btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="submit" class="rounded btn btn-primary">Submit</button>
+</form>
+<script>
+    PageLoadActions();
+</script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>

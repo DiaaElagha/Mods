@@ -1,0 +1,93 @@
+﻿@model SkinsAdmin.Models.Apps
+
+@{
+    Layout = null;
+}
+
+<form asp-action="Create" method="post" class="ajaxForm" tname="#dataTableId" id="myForm" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Name" asp-for="Name" class="form-control-label"></label>
+                <input asp-for="Name" class="form-control">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Name" asp-for="AppKey" class="form-control-label"></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-secondary getNewPass" type="button" id="btn-key">
+                            <i class="fa fa-refresh fa-2x text-primary" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <input asp-for="AppKey" id="keyvalueId" rel="gp" data-size="32" data-character-set="a-z,A-Z" readonly class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 text-left">
+            <div class="form-group">
+                <label for="CategoryId" asp-for="CategoryId" class="form-control-label"></label>
+                <select asp-for="CategoryId" asp-items="ViewBag.listCategory" data-size="6" data-live-search="true" class="rounded selectpicker" data-width="100%">
+                    <option value="">Select category</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-3 text-left">
+            <div class="form-group">
+                <label for="IsShow" asp-for="IsActive" class="form-control-label"></label><br />
+                <span class="kt-switch kt-switch--outline kt-switch--icon kt-switch--info">
+                    <label>
+                        <input checked type="checkbox" asp-for="IsActive">
+                        <span></span>
+                    </label>
+                </span>
+                <span asp-validation-for="IsActive" class="text-danger"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <button type="button" class="rounded btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="submit" class="rounded btn btn-primary">Submit</button>
+</form>
+<script>
+    $('.selectpicker').selectpicker();
+    PageLoadActions();
+
+    $('#keyvalueId').val(randString('#keyvalueId'));
+    $('#btn-key').click(function () {
+        $('#keyvalueId').val(randString('#keyvalueId'));
+    });
+
+    // Generate a password string
+    function randString(id) {
+        var dataSet = $(id).attr('data-character-set').split(',');
+        var possible = '';
+        if ($.inArray('a-z', dataSet) >= 0) {
+            possible += 'abcdefghijklmnopqrstuvwxyz';
+        }
+        if ($.inArray('A-Z', dataSet) >= 0) {
+            possible += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        }
+        if ($.inArray('0-9', dataSet) >= 0) {
+            possible += '0123456789';
+        }
+        if ($.inArray('#', dataSet) >= 0) {
+            possible += '![]{}()%&*$#^<>~@@|';
+        }
+        var text = '';
+        for (var i = 0; i < $(id).attr('data-size'); i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return text;
+    }
+
+</script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+

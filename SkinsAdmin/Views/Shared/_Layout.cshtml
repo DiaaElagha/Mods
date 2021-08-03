@@ -1,0 +1,536 @@
+﻿@{
+    string Action = "";
+    string Controller = "";
+    string currentURL = "";
+    try
+    {
+        Action = ViewContext.RouteData.Values["action"].ToString().ToLower();
+        Controller = ViewContext.RouteData.Values["Controller"].ToString().ToLower();
+        currentURL = Controller + "/" + Action;
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+    }
+}
+<!DOCTYPE html>
+<html direction="ltr" dir="ltr" style="direction: ltr" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - MODS</title>
+    <meta name="description" content="Server-side processing examples">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--begin::Fonts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js"></script>
+    <script>
+        WebFont.load({
+            google: {
+                "families": ["Poppins:300,400,500,600,700", "Roboto:300,400,500,600,700"]
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+
+    <!--end::Fonts -->
+    <!--begin::Page Vendors Styles(used by this page) -->
+    <link href="~/adminpage/css/vendors/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendors Styles -->
+    <!--begin::Global Theme Styles(used by all pages) -->
+    <link href="~/adminpage/css/global/vendors.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="~/adminpage/css/global/style.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Global Theme Styles -->
+    <!--begin::Layout Skins(used by all pages) light -->
+    <link href="~/adminpage/css/skins/header/base/dark.css" rel="stylesheet" />
+    <link href="~/adminpage/css/skins/header/menu/dark.css" rel="stylesheet" />
+    <link href="~/adminpage/css/skins/brand/dark.css" rel="stylesheet" type="text/css" />
+    <link href="~/adminpage/css/skins/aside/dark.css" rel="stylesheet" type="text/css" />
+    <!--end::Layout Skins -->
+    <link rel="shortcut icon" href="~/files/Default/logo.png" />
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <!-- get the required files from 3rd party sources -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+    @RenderSection("Css", required: false)
+
+    <style>
+        body {
+            background: #E5E5E5;
+        }
+        input, textarea, small, button, a, body, h1, h2, h3, h4, h5, h6 {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .kt-portlet .kt-portlet__body {
+            padding: 15px !important
+        }
+
+        .kt-portlet--mobile {
+            background-color: #fdfdfded !important;
+        }
+
+        #kt_header {
+        }
+
+        @@media (min-width:1025px) {
+            #kt_content {
+                margin-top: -115px !important;
+            }
+        }
+
+        @@media (min-width:1281px) {
+            #kt_content {
+                margin-top: -115px !important;
+            }
+        }
+
+        .kt-page--loading * {
+            text-align: right
+        }
+
+        #PopUp .close::before, #PopUp-Custom .close::before {
+            content: none;
+        }
+
+        /*start validation*/
+        .field-validation-error {
+            color: #ff0000 !important;
+            font-weight: normal !important;
+        }
+
+        .field-validation-valid {
+            display: none !important;
+        }
+
+        input.input-validation-error {
+            border: 1px solid #e80c4d !important;
+        }
+
+        .validation-summary-errors {
+            color: #e80c4d !important;
+            font-weight: normal !important;
+            font-size: 1.1em !important;
+        }
+
+        .validation-summary-valid {
+            display: none !important;
+        }
+        /*end validation*/
+        .kt-notification .kt-notification__item:after {
+            border: 0;
+            content: ".";
+            font-size: 6rem;
+            line-height: 0;
+            position: relative;
+            bottom: 23px;
+            color: #0122e9;
+        }
+
+        /* For Spinner Ajax*/
+
+        .lds-dual-ring.hidden {
+            display: none;
+        }
+
+        .lds-dual-ring {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+        }
+
+            .lds-dual-ring:after {
+                content: " ";
+                display: block;
+                width: 64px;
+                height: 64px;
+                margin: 15% auto;
+                border-radius: 50%;
+                border: 6px solid #fff;
+                border-color: #435be9 transparent #325bb2 transparent;
+                animation: lds-dual-ring 1.2s linear infinite;
+            }
+
+        @@keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.39);
+            z-index: 999;
+            opacity: 1;
+            transition: all 0.5s;
+        }
+        /* End  Spinner Ajax*/
+
+        span.notification-badge {
+            position: relative;
+            top: -10px;
+            right: 10px;
+            margin-right: -18px;
+            font-size: 12px
+        }
+
+        .badge-status {
+            background-color: rgba(243, 243, 243, 0.80) !important;
+            color: #4e6af6;
+            font-weight: bold;
+            font-size: 7px !important;
+            padding: 6px;
+            margin-right: 6px
+        }
+
+        div.m-input-icon.m-input-icon--left {
+            border: 1px solid #bebebe
+        }
+
+        .background-color-canceled > td {
+            color: #bebebe !important
+        }
+
+        .checkbox {
+            -webkit-transform: scale(1.1, 1.1)
+        }
+
+        /*//-----------*/
+        ::-webkit-scrollbar {
+            width: 9px;
+            height: 4px;
+            background-color: #dddddd;
+            border: 1px solid #d5d5d5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            background-color: #3751FF;
+        }
+
+        .scrollbar, table-responsive {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            float: left;
+        }
+
+            .scrollbar::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+                background-color: #F5F5F5;
+                border-radius: 5px;
+            }
+
+            .scrollbar::-webkit-scrollbar {
+                width: 4px;
+                background-color: #F5F5F5;
+            }
+
+            .scrollbar::-webkit-scrollbar-thumb {
+                border-radius: 5px;
+                -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+                background-image: -webkit-linear-gradient(330deg, #d4fc79 0%, #96e6a1 100%);
+                background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+            }
+
+            .scrollbar:hover {
+                overflow-y: scroll;
+            }
+
+        span.kt-menu__link-text {
+            color: #d2d7f1 !important;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            font-size: 16px !important;
+            padding-left: 10px !important
+        }
+
+        button.kt-menu__link-text {
+            color: #d2d7f1 !important;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            font-size: 16px !important;
+        }
+
+        .checkbox {
+            -webkit-transform: scale(1.3, 1.3)
+        }
+
+    </style>
+
+</head>
+
+<!-- end::Head -->
+<!-- begin::Body -->
+<body class="kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--fixed kt-subheader--enabled kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading">
+    <div id="loader" class="lds-dual-ring hidden overlay"></div>
+    <!-- begin:: Page -->
+    <!-- begin:: Header Mobile -->
+    <div id="kt_header_mobile" class="kt-header-mobile  kt-header-mobile--fixed ">
+        <div class="kt-header-mobile__logo">
+            <a href="~/Home/Dashboard">
+                <img alt="Logo" src="~/files/Default/logo.png" style="padding-right:10px" />
+            </a>
+        </div>
+        <div class="kt-header-mobile__toolbar">
+            <button class="kt-header-mobile__toggler kt-header-mobile__toggler--left" id="kt_aside_mobile_toggler"><span></span></button>
+        </div>
+    </div>
+
+    <!-- end:: Header Mobile -->
+    <div class="kt-grid kt-grid--hor kt-grid--root">
+        <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver kt-page">
+
+            <!-- begin:: Aside -->
+            <button class="kt-aside-close " id="kt_aside_close_btn"><i class="la la-close"></i></button>
+            <div class="kt-aside  kt-aside--fixed  kt-grid__item kt-grid kt-grid--desktop kt-grid--hor-desktop" id="kt_aside">
+
+                <!-- begin:: Aside -->
+                <div class="kt-aside__brand kt-grid__item " id="kt_aside_brand" style="padding-top:45px!important;padding-bottom:45px!important">
+                    <div class="kt-aside__brand-logo">
+                        <a href="~/Home/Dashboard">
+                            <img class="logo-img" alt="Logo" src="~/files/Default/logo.png" width="130%" />
+                        </a>
+                    </div>
+                </div>
+
+                <!-- end:: Aside -->
+                <!-- begin:: Aside Menu -->
+                <div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
+                    <div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
+                        <ul class="kt-menu__nav ">
+                            @if (Action.Equals("dashboard") && Controller.Equals("home"))
+                            {
+                                <li class="kt-menu__item " aria-haspopup="true" style="background-color: #ccced821;border-left: 3px solid #DDE2FF;">
+                                    <a href="~/Home/Dashboard" class="kt-menu__link ">
+                                        <span class="kt-menu__link-icon">
+                                            <img src="~/files/Default/ic_dash.png" />
+                                        </span>
+                                        <span class="kt-menu__link-text">Dashboard</span>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="kt-menu__item " aria-haspopup="true">
+                                    <a href="~/Home/Dashboard" class="kt-menu__link ">
+                                        <span class="kt-menu__link-icon">
+                                            <img src="~/files/Default/ic_dash.png" />
+                                        </span>
+                                        <span class="kt-menu__link-text">Dashboard</span>
+                                    </a>
+                                </li>
+                            }
+                            <li class="kt-menu__item " aria-haspopup="true">
+                                <a href="~/Skins/Create2" title="Add New Skin" class="PopUp kt-menu__link ">
+                                    <span class="kt-menu__link-icon">
+                                        <img src="~/files/Default/Plus.png" />
+                                    </span>
+                                    <span class="kt-menu__link-text">Add New</span>
+                                </a>
+                            </li>
+                            @if (Action.Equals("index") && Controller.Equals("mods"))
+                            {
+                                <li class="kt-menu__item " aria-haspopup="true" style="background-color: #ccced821;border-left: 3px solid #DDE2FF;">
+                                    <a href="~/Mods/Index" class="kt-menu__link ">
+                                        <span class="kt-menu__link-icon">
+                                            <img src="~/files/Default/Image.png" />
+                                        </span>
+                                        <span class="kt-menu__link-text">All Mods</span>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="kt-menu__item " aria-haspopup="true">
+                                    <a href="~/Mods/Index" class="kt-menu__link ">
+                                        <span class="kt-menu__link-icon">
+                                            <img src="~/files/Default/Image.png" />
+                                        </span>
+                                        <span class="kt-menu__link-text">All Mods</span>
+                                    </a>
+                                </li>
+                            }
+
+                            @if (Action.Equals("index") && Controller.Equals("category"))
+                            {
+                                <li class="kt-menu__item " aria-haspopup="true" style="background-color: #ccced821;border-left: 3px solid #DDE2FF;">
+                                    <a href="~/Category/Index" class="kt-menu__link ">
+                                        <span class="kt-menu__link-icon">
+                                            <img src="~/files/Default/FolderNotch.png" />
+                                        </span>
+                                        <span class="kt-menu__link-text">Category</span>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="kt-menu__item " aria-haspopup="true">
+                                    <a href="~/Category/Index" class="kt-menu__link">
+                                        <span class="kt-menu__link-icon">
+                                            <img src="~/files/Default/FolderNotch.png" />
+                                        </span>
+                                        <span class="kt-menu__link-text">Category</span>
+                                    </a>
+                                </li>
+                            }
+
+
+                            <hr style="border: 1px solid #DFE0EB;opacity: 0.06; " />
+
+                            @if (Action.Equals("index") && Controller.Equals("apps"))
+                            {
+                                <li class="kt-menu__item " aria-haspopup="true" style="background-color: #ccced821;border-left: 3px solid #DDE2FF;">
+                                    <a href="~/Apps/Index" class="kt-menu__link ">
+                                        <span class="kt-menu__link-icon">
+                                            <img src="~/files/Default/ic_app.png" />
+                                        </span>
+                                        <span class="kt-menu__link-text">Apps</span>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="kt-menu__item " aria-haspopup="true">
+                                    <a href="~/Apps/Index" class="kt-menu__link">
+                                        <span class="kt-menu__link-icon">
+                                            <img src="~/files/Default/ic_app.png" />
+                                        </span>
+                                        <span class="kt-menu__link-text">Apps</span>
+                                    </a>
+                                </li>
+                            }
+
+
+                            <li class="kt-menu__item" aria-haspopup="true">
+                                <a href="javascript:void(0)" class="kt-menu__link ">
+                                    <span class="kt-menu__link-icon">
+                                        <img src="~/files/Default/logout 1.png" />
+                                    </span>
+                                    <span class="kt-menu__link-text">
+                                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Dashboard", "Home", new { area = "" })">
+                                            <button type="submit" class="kt-menu__link-text  btn-block" style="background-color:transparent;border:none;width:100%">Logout</button>
+                                        </form>
+                                    </span>
+
+                                </a>
+                            </li>
+                            <hr style="border: 1px solid #DFE0EB;opacity: 0.06; " />
+                            <li class="kt-menu__item " aria-haspopup="true">
+                                <a href="~/Identity/Account/Manage/Changepassword" class="kt-menu__link">
+                                    <small class="kt-menu__link-text">Change password</small>
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                </div>
+
+                <!-- end:: Aside Menu -->
+            </div>
+
+            <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-wrapper" id="kt_wrapper">
+                <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+
+                    <!-- begin:: Content -->
+                    <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
+                        @RenderBody()
+                    </div>
+
+                    <!-- end:: Content -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- end:: Page -->
+    <!-- begin::Scrolltop -->
+    <div id="kt_scrolltop" class="kt-scrolltop">
+        <i class="fa fa-arrow-up"></i>
+    </div>
+
+    <div class="modal fade" id="PopUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="la la-close text-primary"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="Confirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Warning</h3>
+                </div>
+                <div class="modal-body">
+                    <p style="font-size: 18px">Are you sure to continue the process?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table id="dataTableId">
+    </table>
+
+    <!-- begin::Global Config(global config for global JS sciprts) -->
+    <script>
+        var KTAppOptions = {
+            "colors": {
+                "state": {
+                    "brand": "#5d78ff",
+                    "dark": "#282a3c",
+                    "light": "#ffffff",
+                    "primary": "#5867dd",
+                    "success": "#34bfa3",
+                    "info": "#36a3f7",
+                    "warning": "#ffb822",
+                    "danger": "#fd3995"
+                },
+                "base": {
+                    "label": ["#c5cbe3", "#a1a8c3", "#3d4465", "#3e4466"],
+                    "shape": ["#f0f3ff", "#d9dffa", "#afb4d4", "#646c9a"]
+                }
+            }
+        };
+    </script>
+    <!-- end::Global Config -->
+    <!--begin::Global Theme Bundle(used by all pages) -->
+    <script src="~/adminpage/js/vendors.bundle.js" type="text/javascript"></script>
+    <script src="~/adminpage/js/scripts.bundle.js" type="text/javascript"></script>
+    <!--end::Global Theme Bundle -->
+    <!--begin::Page Vendors(used by this page) -->
+    <script src="~/adminpage/js/datatables.bundle.js" type="text/javascript"></script>
+    <!--end::Page Vendors -->
+
+    <script src="~/js/MainLayoutAJAX.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+
+<!-- end::Body -->
+</html>

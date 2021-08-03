@@ -1,0 +1,160 @@
+﻿@model SkinsAdmin.Models.DashboardVM
+@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@section Css{
+    <style>
+        td {
+            padding: 5px 1px 5px 1px !important;
+            font-size: 14px !important;
+            color: #000000 !important
+        }
+
+        th {
+            font-weight: bold !important;
+            color: #210c56 !important
+        }
+
+        td a {
+            margin-left: 5px !important;
+        }
+
+        .m-portlet__body {
+            padding-top: 0px !important;
+        }
+
+        .dt-buttons {
+            margin-top: 12px
+        }
+
+        div.m-input-icon.m-input-icon--left {
+            border: 1px solid #bebebe
+        }
+
+        .panel-dash {
+            border-radius: 8px !important
+        }
+
+        .list-group-item {
+            padding-top: 18px;
+            padding-bottom: 18px;
+        }
+
+        .card-dash {
+            border-radius: 8px !important;
+            font-weight: 700;
+            font-size: 19px;
+            text-align: center;
+        }
+
+            .card-dash .dash-number {
+                font-weight: 300;
+                font-size: 35px;
+                text-align: right
+            }
+
+        .dash-number-sm {
+            font-weight: 300;
+            font-size: 20px;
+        }
+
+        .dash-number-md {
+            font-weight: 400;
+            font-size: 25px;
+        }
+
+        .card-dash h4 {
+            text-align: center
+        }
+
+        .line-dash {
+            border: 0;
+            clear: both;
+            display: block;
+            width: 100%;
+            padding: 0px !important;
+            background-color: #DFE0EB;
+            height: 2px;
+        }
+    </style>
+}
+
+<link rel="stylesheet" type="text/css" href="https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/css/bootstrap-extended.min.css">
+<link rel="stylesheet" type="text/css" href="https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/fonts/simple-line-icons/style.min.css">
+
+
+<h1 style="color:#000000;font-size:65px!important;font-weight:900;text-align:left"><b>Dashboard</b></h1>
+
+<div class="row pb-1 pt-3">
+
+    <div class="col-xl-6 col-sm-3 col-12">
+        <div class="card card-dash shadow pt-3 pb-3">
+            <div class="card-body">
+                <div class="media d-flex">
+                    <div class="align-self-center">
+                        <i class="icon-picture primary font-large-2 float-left"></i>
+                    </div>
+                    <div class="media-body text-right">
+                        <h3 class="dash-number Count" style="color:#3751FF!important">@Model.totalMods</h3>
+                        <span>Total Mods</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-xl-6 col-sm-3 col-12">
+        <div class="card card-dash shadow pt-3 pb-3">
+            <div class="card-body">
+                <div class="media d-flex">
+                    <div class="align-self-center">
+                        <i class="icon-book-open primary font-large-2 float-left"></i>
+                    </div>
+                    <div class="media-body text-right">
+                        <h3 class="dash-number Count" style="color:#3751FF!important">@Model.totalCategories</h3>
+                        <span>Total Categories</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6 col-sm-3 col-12">
+        <div class="card card-dash shadow pt-3 pb-3">
+            <div class="card-body">
+                <div class="media d-flex">
+                    <div class="align-self-center">
+                        <i class="icon-screen-smartphone primary font-large-2 float-left"></i>
+                    </div>
+                    <div class="media-body text-right">
+                        <h3 class="dash-number Count" style="color:#3751FF!important">@Model.totalApps</h3>
+                        <span>Total APPs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts{
+
+    <script>
+        $('.Count').each(function () {
+            var $this = $(this);
+            jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+                duration: 1000,
+                easing: 'swing',
+                step: function () {
+                    $this.text(Math.ceil(this.Counter));
+                }
+            });
+        });
+
+    </script>
+
+}

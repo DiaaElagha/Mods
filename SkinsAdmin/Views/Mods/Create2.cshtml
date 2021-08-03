@@ -1,0 +1,116 @@
+﻿@*@model SkinsAdmin.Models.Skin
+
+@{
+    Layout = null;
+}
+
+<form asp-action="Create" method="post" class="ajaxForm" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="Name" asp-for="Name" class="form-control-label"></label>
+                <input asp-for="Name" class="form-control">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-5 text-left">
+            <div class="form-group">
+                <label for="CategoryId" asp-for="CategoryId" class="form-control-label"></label>
+                <select asp-for="CategoryId" asp-items="ViewBag.listCategory" data-size="6" data-live-search="true" class="rounded selectpicker" data-width="100%">
+                    <option value="">Select category</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-group">
+                <label for="TotalDownloands" asp-for="TotalDownloands" class="form-control-label"></label>
+                <input asp-for="TotalDownloands" type="number" min="0" value="0" class="form-control">
+                <span asp-validation-for="TotalDownloands" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-group">
+                <label for="TotalDownloands" asp-for="TotalViews" class="form-control-label"></label>
+                <input asp-for="TotalViews" type="number" min="0" value="0" class="form-control">
+                <span asp-validation-for="TotalViews" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-group">
+                <label for="TotalLikes" asp-for="TotalLikes" class="form-control-label"></label>
+                <input asp-for="TotalLikes" type="number" min="0" value="0" class="form-control">
+                <span asp-validation-for="TotalLikes" class="text-danger"></span>
+            </div>
+        </div>
+
+       
+
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="ThumbnailPath" asp-for="ThumbnailPath" class="form-control-label"></label>
+                <div class="card" style=" border: 3px solid #17c67a;border-radius:8px;background-color:#f6f6f6">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md text-center">
+                                <img src="~/files/Default/Image2.png" id="imageThumbnailPathId" width="130px" height="106px" />
+                            </div>
+                        </div>
+                        <input type="file" asp-for="ThumbnailPath" id="ThumbnailPathId" class="form-control mt-2" accept="image/*">
+                        <span asp-validation-for="ThumbnailPath" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="SkinFilePath" asp-for="SkinFilePath" class="form-control-label"></label>
+                <div class="card" style=" border: 3px solid #2d7be9;border-radius:8px;background-color:#f6f6f6">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md text-center">
+                                <img src="~/files/Default/Image2.png" id="imageSkinFilePathId" width="130px" height="106px" />
+                            </div>
+                        </div>
+                        <input type="file" asp-for="SkinFilePath" id="SkinFilePathId" class="form-control mt-2" accept="image/*">
+                        <span asp-validation-for="SkinFilePath" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="rounded btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="submit" class="rounded btn btn-primary">Submit</button>
+</form>
+<script>
+    $('.selectpicker').selectpicker();
+    PageLoadActions();
+</script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+<script>
+    function readURL(input, imageId) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#' + imageId).attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]); // convert to base64 string
+        }
+    }
+
+    $("#ThumbnailPathId").change(function () {
+        readURL(this, 'imageThumbnailPathId');
+    });
+
+    $("#SkinFilePathId").change(function () {
+        readURL(this, 'imageSkinFilePathId');
+    });
+</script>*@
+

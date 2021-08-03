@@ -1,0 +1,199 @@
+﻿@{
+    ViewData["Title"] = "Apps";
+}
+
+@section Css{
+    <style>
+        td {
+            padding: 5px 1px 5px 1px !important;
+            font-size: 14px !important;
+            color: #000000 !important
+        }
+
+        th {
+            font-weight: bold !important;
+            color: #210c56 !important
+        }
+
+        td a {
+            margin-left: 5px !important;
+        }
+
+        .m-portlet__body {
+            padding-top: 0px !important;
+        }
+
+        .dt-buttons {
+            margin-top: 12px
+        }
+
+        div.m-input-icon.m-input-icon--left {
+            border: 1px solid #bebebe
+        }
+
+        .panel-dash {
+            border-radius: 8px !important
+        }
+
+        .list-group-item {
+            padding-top: 18px;
+            padding-bottom: 18px;
+        }
+
+        .card-dash {
+            border-radius: 8px !important;
+            font-weight: 700;
+            font-size: 19px;
+            text-align: center;
+        }
+
+            .card-dash h3.dash-number {
+                font-weight: 700;
+                font-size: 38px;
+            }
+
+        .line-dash {
+            border: 0;
+            clear: both;
+            display: block;
+            width: 100%;
+            padding: 0px !important;
+            background-color: #DFE0EB;
+            height: 2px;
+        }
+    </style>
+}
+
+<h1 style="color:#000000;font-size:65px!important;font-weight:900;text-align:left"><b>Apps</b></h1>
+
+<div class="kt-portlet kt-portlet--mobile panel-dash shadow-none bg-white">
+    <div class="kt-portlet__body shadow-none bg-white" style="padding:30px!important">
+
+        <form class="DTForm">
+            <div class="row">
+                <div class="col-5">
+                    <div class="kt-input-icon kt-input-icon--left">
+                        <input type="text" class="form-control" placeholder="Search" name="SearchKey">
+                        <span class="kt-input-icon__icon kt-input-icon__icon--left">
+                            <span><i class="la la-search"></i></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-1 text-left">
+                    <span class="kt-switch kt-switch--outline kt-switch--icon kt-switch--info">
+                        <label>
+                            <input checked type="checkbox" id="check_activation">
+                            <span></span>
+                        </label>
+                    </span>
+                </div>
+                <div class="col-md text-right">
+                    <a href="~/Apps/Create" title="Add App Cateogry" class="PopUp btn btn-brand btn-elevate btn-icon-sm"
+                       style="color:#FFFFFF;font-size:14px!important;font-weight:600;background-color:#0A65FF">
+                        <img src="~/files/Default/Button.png" />
+                        Add New
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        <!--begin: Datatable -->
+        <table class="table table-striped table-bordered table-hover table-checkable" id="dataTableId" style="text-align:center;border:none">
+            <thead style="border:none;border:0 solid #DFE0EB;text-align:center">
+                <tr>
+                    <th>Name</th>
+                    <th>App-Key</th>
+                    <th>Category Name</th>
+                    <th>Activation</th>
+                    <th>Create At</th>
+                    <th>
+                        <img src="~/files/Default/points.png" />
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".DTForm").submit(function () {
+                dataSourceAjaxServer.init();
+                return false;
+            });
+        });
+
+        $("#check_activation").change(function () {
+            dataSourceAjaxServer.init();
+        });
+        var dataSourceAjaxServer = function () {
+            var initTable1 = function () {
+                var table = $('#dataTableId');
+                // begin first table
+                table.DataTable({
+                    language: {
+                        emptyTable: "There is no data to display", info: "show _START_ to _END_ from _TOTAL_ row", infoEmpty: "There are no results", infoFiltered: "(filtered1 from _MAX_ total records)", lengthMenu: "_MENU_", search: "search", zeroRecords: "There are no results to display"
+                    },
+                    responsive: true,
+                    searchDelay: 500,
+                    processing: true,
+                    serverSide: true,
+                    sPaginationType: "full_numbers",
+                    bDestroy: true,
+                    bSort: false,
+                    bLengthChange: true,
+                    dom:
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-4'i><'col-sm-4 text-center'l><'col-sm-4'p>>",
+                    ajax: {
+                        type: "POST",
+                        contentType: "application/json",
+                        url: '/Apps/AjaxData',
+                        data: function (d) {
+                            d.SearchKey = ($("[name=SearchKey]").val());
+                            d.checkActivation = $("#check_activation").is(":checked");
+                            return JSON.stringify(d);
+                        }
+                    },
+                    columns: [
+                        { data: 'Name' },
+                        { data: 'AppKey' },
+                        { data: 'CategoryName' },
+                        {
+                            "render": function (data, type, row) {
+                                if (row["IsActive"]) {
+                                    return '<span class="badge badge-primary" style="background-color:#5867dd!important"><b class="text-white">Active</b></span>';
+                                }
+                                return '<span class="badge badge-primary" style="background-color: #797979!important;"><b class="text-white">InActive</b></span>';
+                            }
+                        },
+                        { data: 'createAt' },
+                        { data: 'Actions', responsivePriority: -1 },
+                    ],
+                    columnDefs: [
+                        {
+                            targets: -1,
+                            orderable: false,
+                            render: function (data, type, row, meta) {
+                                return ''
+                                    + '<a href="/Apps/Edit/' + row["Id"] + '" title="Edit App" class="PopUp"><img src="/files/Default/Edit.png" /></a>';
+                            },
+                        }
+                    ],
+                });
+            };
+
+            return {
+                init: function () {
+                    initTable1();
+                },
+            };
+        }();
+        jQuery(document).ready(function () {
+            dataSourceAjaxServer.init();
+        });
+
+
+    </script>
+}

@@ -1,0 +1,56 @@
+﻿@model SkinsAdmin.Models.Apps
+
+@{
+    Layout = null;
+}
+
+<form asp-action="Edit" method="post" class="ajaxForm" tname="#dataTableId" id="myForm">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Name" asp-for="Name" class="form-control-label"></label>
+                <input asp-for="Name" class="form-control">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Name" asp-for="AppKey" class="form-control-label"></label>
+                <input readonly asp-for="AppKey" value="@Model.AppKey" class="form-control">
+            </div>
+        </div>
+        <div class="col-md-6 text-left">
+            <div class="form-group">
+                <label for="CategoryId" asp-for="CategoryId" class="form-control-label"></label>
+                <select asp-for="CategoryId" asp-items="ViewBag.listCategory" data-size="6" data-live-search="true" class="rounded selectpicker" data-width="100%">
+                    <option value="">Select category</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-3 text-left">
+            <div class="form-group">
+                <label for="IsShow" asp-for="IsActive" class="form-control-label"></label><br />
+                <span class="kt-switch kt-switch--outline kt-switch--icon kt-switch--info">
+                    <label>
+                        <input type="checkbox" asp-for="IsActive">
+                        <span></span>
+                    </label>
+                </span>
+                <span asp-validation-for="IsActive" class="text-danger"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <button type="button" class="rounded btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="submit" class="rounded btn btn-primary">Submit</button>
+</form>
+<script>
+    $('.selectpicker').selectpicker();
+    PageLoadActions();
+</script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+
