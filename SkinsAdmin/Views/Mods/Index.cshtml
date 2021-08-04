@@ -184,6 +184,7 @@
                             orderable: false,
                             render: function (data, type, row, meta) {
                                 return ''
+                                    + '<a target="_blank" href="/Mods/Details/' + row["Id"] + '" title="Details Skin" class="p-0 m-0"><i class="fa fa-list" style="color:#7f92b3;font-size:20px"></i></a>'
                                     + '<a href="/Mods/Edit/' + row["Id"] + '" title="Edit Skin" class="PopUp"><img src="/files/Default/Edit.png" /></a>'
                                     + '<a href="/Mods/Delete/' + row["Id"] + '"  tname="#dataTableId" title="Edit Skin" class="Confirm"><img src="/files/Default/Delete.png" /></a>'
                                     + '<span class="dropdown">'

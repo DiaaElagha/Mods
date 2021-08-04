@@ -6,33 +6,34 @@
 
 <form asp-action="Edit" method="post" class="ajaxForm" tname="#dataTableId" id="myForm" enctype="multipart/form-data">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8">
             <div class="form-group">
-                <label for="Name" asp-for="ModName" class="form-control-label"></label>
+                <label for="Name" asp-for="ModName" class="form-control-label text-primary"></label>
                 <input asp-for="ModName" class="form-control">
                 <span asp-validation-for="ModName" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-4 text-left">
             <div class="form-group">
-                <label for="CategoryId" asp-for="CategoryId" class="form-control-label"></label>
+                <label for="CategoryId" asp-for="CategoryId" class="form-control-label text-primary"></label>
                 <select asp-for="CategoryId" asp-items="ViewBag.listCategory" data-size="6" data-live-search="true" class="rounded selectpicker" data-width="100%">
                     <option value="">Select category</option>
                 </select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
         </div>
-        <div class="col-md-3">
+
+        <div class="col-md-12">
             <div class="form-group">
-                <label for="ModUrl" asp-for="ModUrl" class="form-control-label"></label>
+                <label for="ModUrl" asp-for="ModUrl" class="form-control-label text-primary"></label>
                 <input asp-for="ModUrl" class="form-control">
                 <span asp-validation-for="ModUrl" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group">
-                <label for="ModDescription" asp-for="ModDescription" class="form-control-label"></label>
-                <textarea asp-for="ModDescription" class="form-control border-primary" rows="3"></textarea>
+                <label for="ModDescription" asp-for="ModDescription" class="form-control-label text-primary"></label>
+                <textarea id="summernote" asp-for="ModDescription" class="form-control border-primary" rows="3"></textarea>
                 <span asp-validation-for="ModDescription" class="text-danger"></span>
             </div>
         </div>
@@ -40,8 +41,8 @@
     <div class="row">
         <div class="col-md-3">
             <div class="form-group">
-                <label for="ThumbnailPath" asp-for="ModThumbnailPath" class="form-control-label"></label>
-                <div class="card" style=" border: 3px solid #17c67a;border-radius:8px;background-color:#F6F6F6">
+                <label for="ThumbnailPath" asp-for="ModThumbnailPath" class="form-control-label text-primary"></label>
+                <div class="card" style=" border: 3px solid #17c67a;border-radius:8px;background-color:#f6f6f6">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md text-center">
@@ -56,18 +57,64 @@
                             </div>
                         </div>
                         <input type="file" asp-for="ModThumbnailPath" id="ThumbnailPathId" class="form-control mt-2" accept="image/*">
+                        <span asp-validation-for="ModThumbnailPath" class="text-danger"></span>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-md-9">
+            <div class="form-group">
+                <label class="form-control-label text-primary">Select Images</label>
+                <input type="file" multiple name="listFiles" id="ThumbnailPathId" class="form-control mt-2" accept="image/*">
+            </div>
+        </div>
     </div>
 
+    <div class="row">
+        @{
+            List<SkinsAdmin.Models.Entities.ModImages> modImages = ViewBag.ListImage as List<SkinsAdmin.Models.Entities.ModImages>;
+        }
+
+        @for (int i = 0; i < modImages.Count(); i++)
+        {
+            <div class="col-md-3">
+                <div class="card" style=" border: 3px solid #17c67a;border-radius:8px;background-color:#f6f6f6">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md text-center">
+                                <img src="@modImages[i].ImagePath" width="130px" height="106px" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <br />
     <button type="button" class="rounded btn btn-secondary" data-dismiss="modal">Close</button>
     <button type="submit" class="rounded btn btn-primary">Submit</button>
 </form>
 <script>
     $('.selectpicker').selectpicker();
+
+    $(document).ready(function () {
+        $('#summernote').summernote({
+            height: 100,                 // set editor height
+            focus: true,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+    });
     PageLoadActions();
+
 </script>
 <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>

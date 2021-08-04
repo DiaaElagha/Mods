@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using SkinsAdmin.Data;
 using SkinsAdmin.Helper;
 using SkinsAdmin.Models;
+using SkinsAdmin.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -82,7 +83,7 @@ namespace SkinsAdmin.Controllers
         // POST: Admin/Area/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Mods model, IFormFile ModThumbnailPath)
+        public async Task<IActionResult> Create(Mods model, IFormFile ModThumbnailPath, List<IFormFile> listFiles)
         {
             if (ModThumbnailPath != null)
             {
@@ -90,11 +91,30 @@ namespace SkinsAdmin.Controllers
             }
             if (ModelState.IsValid)
             {
-                model.ModThumbnailPath = AbsoluteUri() + "/files/Images/";
-                model.ModThumbnailPath += await ImageHelper.SaveImage(ModThumbnailPath, _IHostingEnvironment, "files/Images");
+                String MAIN_PATH = AbsoluteUri() + "/files/Images/";
+                model.ModThumbnailPath = MAIN_PATH + await ImageHelper.SaveImage(ModThumbnailPath, _IHostingEnvironment, "files/Images");
 
                 await _context.Mods.AddAsync(model);
                 await _context.SaveChangesAsync();
+
+                if (listFiles.Count() > 0)
+                {
+                    List<ModImages> modImagesList = new List<ModImages>();
+                    for (int i = 0; i < listFiles.Count(); i++)
+                    {
+                        string pathImage = MAIN_PATH + await ImageHelper.SaveImage(listFiles[i], _IHostingEnvironment, "files/Images");
+                        var modImageItem = new ModImages
+                        {
+                            ModsId = model.Id,
+                            ImageName = null,
+                            ImagePath = pathImage
+                        };
+                        modImagesList.Add(modImageItem);
+                    }
+                    await _context.ModImages.AddRangeAsync(modImagesList);
+                    await _context.SaveChangesAsync();
+                }
+
                 return Content(ShowMessage.AddSuccessResult(), "application/json");
             }
             ViewData["listCategory"] = new SelectList(await _context.Category.ToListAsync(), nameof(Category.Id), nameof(Category.Name));
@@ -114,6 +134,7 @@ namespace SkinsAdmin.Controllers
                 return NotFound();
             }
             ViewData["listCategory"] = new SelectList(await _context.Category.ToListAsync(), nameof(Category.Id), nameof(Category.Name));
+            ViewBag.ListImage = await _context.ModImages.Where(x => x.ModsId == id.Value).ToListAsync();
             return View(model);
         }
 
@@ -121,7 +142,7 @@ namespace SkinsAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
             [Bind((nameof(Mods.ModName)), (nameof(Mods.ModDescription)), (nameof(Mods.ModUrl)), (nameof(Mods.CategoryId)))]
-                Mods model, IFormFile skinFilePath, IFormFile ModThumbnailPath)
+                Mods model, IFormFile skinFilePath, IFormFile ModThumbnailPath, List<IFormFile> listFiles)
         {
             ModelState.Remove(nameof(Mods.ModThumbnailPath));
             if (ModelState.IsValid)
@@ -129,17 +150,37 @@ namespace SkinsAdmin.Controllers
                 try
                 {
                     var baseEntoty = await _context.Mods.FindAsync(id);
+                    string MAIN_PATH = AbsoluteUri() + "/files/Images/";
                     if (ModThumbnailPath != null)
                     {
-                        baseEntoty.ModThumbnailPath = AbsoluteUri() + "/files/Images/";
-                        baseEntoty.ModThumbnailPath += await ImageHelper.SaveImage(ModThumbnailPath, _IHostingEnvironment, "files/Images");
+                        baseEntoty.ModThumbnailPath = MAIN_PATH + await ImageHelper.SaveImage(ModThumbnailPath, _IHostingEnvironment, "files/Images");
                     }
 
                     baseEntoty.ModName = model.ModName;
+                    baseEntoty.ModDescription = model.ModDescription;
+                    baseEntoty.ModUrl = model.ModUrl;
                     baseEntoty.CategoryId = model.CategoryId;
                     baseEntoty.UpdateAt = DateTime.Now;
                     _context.Mods.Update(baseEntoty);
                     await _context.SaveChangesAsync();
+
+                    if (listFiles.Count() > 0)
+                    {
+                        List<ModImages> modImagesList = new List<ModImages>();
+                        for (int i = 0; i < listFiles.Count(); i++)
+                        {
+                            string pathImage = MAIN_PATH + await ImageHelper.SaveImage(listFiles[i], _IHostingEnvironment, "files/Images");
+                            var modImageItem = new ModImages
+                            {
+                                ModsId = model.Id,
+                                ImageName = null,
+                                ImagePath = pathImage
+                            };
+                            modImagesList.Add(modImageItem);
+                        }
+                        await _context.ModImages.AddRangeAsync(modImagesList);
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -194,6 +235,17 @@ namespace SkinsAdmin.Controllers
             {
                 return "error";
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var model = await _context.Mods.Include(x => x.Category).SingleOrDefaultAsync(x => x.Id == id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+            return View(model);
         }
 
     }
